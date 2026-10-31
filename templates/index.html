@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SMS Spam Detection | ML Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="app-wrapper">
+
+        <header class="topbar">
+            <a href="/" class="brand">SMS Shield</a>
+
+            <nav>
+                <a href="/" class="nav-active">Detector</a>
+                <a href="{{ url_for('history') }}">History ↗</a>
+                 <a href="{{ url_for('daa_analysis') }}">DAA Analysis</a>
+            </nav>
+        </header>
+
+        <main>
+
+            <section class="hero">
+                <span class="eyebrow">MACHINE LEARNING PROJECT</span>
+
+                <h1>Detect spam.<br><span>Stay protected.</span></h1>
+
+                <p>
+                    Check suspicious SMS messages using a trained
+                    Machine Learning model.
+                </p>
+            </section>
+
+            <section class="stats">
+                <div class="stat-card">
+                    <span class="stat-icon">📩</span>
+                    <p>Total Checked</p>
+                    <h2>{{ total }}</h2>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-icon">🚨</span>
+                    <p>Spam Messages</p>
+                    <h2>{{ spam_count }}</h2>
+                </div>
+
+                <div class="stat-card">
+                    <span class="stat-icon">🛡️</span>
+                    <p>Not Spam</p>
+                    <h2>{{ safe_count }}</h2>
+                </div>
+            </section>
+
+            <section class="detector-card">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>SMS Message Analyzer</h2>
+                        <p>Paste a message below to analyze it.</p>
+                    </div>
+
+                    <span class="live-badge">● ML MODEL ACTIVE</span>
+                </div>
+
+                <form method="POST" id="smsForm">
+
+                    <label for="message">Your SMS Message</label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="5"
+                        maxlength="5000"
+                        placeholder="Example: Congratulations! You have won a prize..."
+                        required
+                    >{{ message }}</textarea>
+
+                    <div class="input-footer">
+                        <span id="charCount">0 / 5000 characters</span>
+                        <button type="button" id="clearButton"
+                                class="clear-input">
+                            Clear text
+                        </button>
+                    </div>
+
+                    <button type="submit" class="analyze-button">
+                        Analyze Message <span>→</span>
+                    </button>
+
+                </form>
+
+                <div class="examples">
+                    <p>Try a sample message:</p>
+
+                    <button type="button" class="sample-button"
+                            data-message="Congratulations! You have won a free prize. Call now to claim your reward!">
+                        Sample Spam
+                    </button>
+
+                    <button type="button" class="sample-button"
+                            data-message="Hi, are you coming to college tomorrow?">
+                        Sample Genuine
+                    </button>
+                </div>
+
+                {% if result %}
+                    <div class="result-card
+                        {% if result == 'Spam Message' %}result-spam
+                        {% elif result == 'Not Spam' %}result-safe
+                        {% else %}result-neutral{% endif %}">
+
+                        <div class="result-icon">
+                            {% if result == 'Spam Message' %}
+                                ⚠️
+                            {% elif result == 'Not Spam' %}
+                                ✓
+                            {% else %}
+                                ℹ️
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <span class="result-label">PREDICTION RESULT</span>
+                            <h2>{{ result }}</h2>
+
+                            {% if result == 'Spam Message' %}
+                                <p>This message may be unwanted or suspicious.</p>
+                            {% elif result == 'Not Spam' %}
+                                <p>The model classified this message as genuine.</p>
+                            {% else %}
+                                <p>Please enter a message to continue.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <p class="disclaimer">
+                    Note: Predictions are generated by a Machine Learning model
+                    and may not always be correct.
+                </p>
+
+            </section>
+
+        </main>
+
+        <footer class="main-footer">
+            <strong>SMS Shield</strong>
+            <span>Python · Flask · Scikit-learn · SQLite</span>
+            <span>Academic Machine Learning Project</span>
+        </footer>
+
+    </div>
+
+    <script>
+        const messageBox = document.getElementById("message");
+        const charCount = document.getElementById("charCount");
+        const clearButton = document.getElementById("clearButton");
+
+        function updateCounter() {
+            charCount.textContent =
+                messageBox.value.length + " / 5000 characters";
+        }
+
+        messageBox.addEventListener("input", updateCounter);
+
+        clearButton.addEventListener("click", function () {
+            messageBox.value = "";
+            updateCounter();
+            messageBox.focus();
+        });
+
+        document.querySelectorAll(".sample-button").forEach(function (button) {
+            button.addEventListener("click", function () {
+                messageBox.value = button.dataset.message;
+                updateCounter();
+                messageBox.focus();
+            });
+        });
+
+        updateCounter();
+    </script>
+
+</body>
+</html>

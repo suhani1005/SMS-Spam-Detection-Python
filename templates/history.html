@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction History | SMS Shield</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="topbar">
+        <div class="brand">🛡️ SMS Shield</div>
+
+        <nav>
+            <a href="{{ url_for('home') }}">Detector</a>
+            <a href="{{ url_for('history') }}" class="active">History</a>
+        </nav>
+    </header>
+
+    <main class="page-wrapper">
+
+        <!-- Page Heading -->
+        <section class="hero">
+            <p class="eyebrow">YOUR ACTIVITY</p>
+
+            <h1>Prediction History</h1>
+
+            <p class="subtitle">
+                Review your previously checked SMS messages.
+            </p>
+        </section>
+
+        <!-- Statistics -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <h3>Total Checked</h3>
+                <p>{{ total }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Spam Messages</h3>
+                <p>{{ spam_count }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Safe Messages</h3>
+                <p>{{ safe_count }}</p>
+            </div>
+
+        </section>
+
+        <!-- Prediction History Card -->
+        <section class="detector-card history-card">
+
+            <!-- Section Heading and Clear History -->
+            <div class="section-heading">
+
+                <div>
+                    <h2>Recent Messages</h2>
+
+                    <p class="subtitle">
+                        Your saved prediction records
+                    </p>
+                </div>
+
+                {% if total > 0 %}
+
+                <form method="POST"
+                      action="{{ url_for('clear_history') }}"
+                      onsubmit="return confirm('Are you sure you want to delete all prediction history? This action cannot be undone.');">
+
+                    <button type="submit" class="clear-button">
+                        Clear History
+                    </button>
+
+                </form>
+
+                {% endif %}
+
+            </div>
+
+            <!-- Clear History Success Message -->
+            {% if cleared %}
+
+            <p class="success-message">
+                Prediction history cleared successfully!
+            </p>
+
+            {% endif %}
+
+            <!-- DAA: Linear Search Form -->
+            <form method="GET"
+                  action="{{ url_for('history') }}"
+                  class="history-search-form">
+
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search SMS messages..."
+                    value="{{ search_query }}"
+                    aria-label="Search SMS messages">
+
+                <button type="submit" class="primary-button">
+                    Search
+                </button>
+
+                {% if search_query %}
+
+                <a href="{{ url_for('history') }}"
+                   class="clear-search-button">
+                    Clear Search
+                </a>
+
+                {% endif %}
+
+            </form>
+            <!-- DAA: Merge Sort Button -->
+<form method="GET"
+      action="{{ url_for('history') }}"
+      class="sort-form">
+
+    {% if search_query %}
+    <input type="hidden" name="search" value="{{ search_query }}">
+    {% endif %}
+
+    <input type="hidden" name="sort" value="az">
+
+    <button type="submit" class="primary-button">
+        Sort A–Z
+    </button>
+
+    {% if sort_order == "az" %}
+    <a href="{{ url_for('history', search=search_query) }}"
+       class="clear-search-button">
+        Reset Sorting
+    </a>
+    {% endif %}
+
+</form>
+
+            <!-- Display Search Query -->
+            {% if search_query %}
+
+            <p class="subtitle">
+                Search results for:
+                <strong>{{ search_query }}</strong>
+            </p>
+
+            {% endif %}
+
+            <!-- Display Records -->
+            {% if records %}
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>SMS Message</th>
+                            <th>Prediction</th>
+                            <th>Date &amp; Time</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for record in records %}
+
+                        <tr>
+
+                            <td>
+                                {{ record["id"] }}
+                            </td>
+
+                            <td class="message-cell">
+                                {{ record["message"] }}
+                            </td>
+
+                            <td>
+
+                                {% if record["prediction"] == "Spam Message" %}
+
+                                <span class="badge spam">
+                                    Spam
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge safe">
+                                    Not Spam
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ record["created_at"] }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Empty Results -->
+            {% else %}
+
+            <div class="empty-state">
+
+                {% if search_query %}
+
+                <h3>No matching messages found</h3>
+
+                <p>
+                    Try another keyword or clear your search
+                    to see all messages.
+                </p>
+
+                <a class="primary-button"
+                   href="{{ url_for('history') }}">
+                    Show All Messages
+                </a>
+
+                {% else %}
+
+                <h3>No history yet</h3>
+
+                <p>
+                    Once you check an SMS, its prediction
+                    will appear here.
+                </p>
+
+                <a class="primary-button"
+                   href="{{ url_for('home') }}">
+                    Check an SMS
+                </a>
+
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            Python | Flask | Machine Learning | SQLite | DAA
+        </footer>
+
+    </main>
+
+</body>
+
+</html>

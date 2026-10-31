@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DAA Analysis | SMS Shield</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="topbar">
+        <div class="brand">🛡️ SMS Shield</div>
+
+        <nav>
+            <a href="{{ url_for('home') }}">Detector</a>
+            <a href="{{ url_for('history') }}">History</a>
+            <a href="{{ url_for('daa_analysis') }}" class="active">
+                DAA Analysis
+            </a>
+        </nav>
+    </header>
+
+    <main class="page-wrapper">
+
+        <!-- Page Heading -->
+        <section class="hero">
+            <p class="eyebrow">ALGORITHM PERFORMANCE</p>
+
+            <h1>DAA Analysis</h1>
+
+            <p class="subtitle">
+                Design and Analysis of Algorithms used in SMS Shield.
+            </p>
+        </section>
+
+        <!-- Summary -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <h3>Total SMS Records</h3>
+                <p>{{ total_records }}</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Linear Search</h3>
+                <p>{{ "%.8f"|format(linear_time) }} s</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Merge Sort</h3>
+                <p>{{ "%.8f"|format(merge_time) }} s</p>
+            </div>
+
+        </section>
+
+        <!-- Algorithm Details -->
+        <section class="detector-card">
+
+            <h2>1. Linear Search</h2>
+
+            <p>
+                Linear Search checks records one by one to find SMS
+                messages containing a given keyword.
+            </p>
+
+            <p>
+                <strong>Search keyword:</strong>
+                {{ search_keyword if search_keyword else "No keyword available" }}
+            </p>
+
+            <p>
+                <strong>Time Complexity:</strong> O(n)
+            </p>
+
+            <p>
+                <strong>Space Complexity:</strong> O(k), where k is the
+                number of matching records returned.
+            </p>
+
+        </section>
+
+        <section class="detector-card">
+
+            <h2>2. Merge Sort</h2>
+
+            <p>
+                Merge Sort divides the SMS records into smaller parts,
+                sorts them recursively, and merges the sorted parts.
+            </p>
+
+            <p>
+                <strong>Sorting order:</strong> Alphabetical (A–Z)
+            </p>
+
+            <p>
+                <strong>Time Complexity:</strong> O(n log n)
+            </p>
+
+            <p>
+                <strong>Auxiliary Space Complexity:</strong> O(n)
+            </p>
+
+        </section>
+
+        <!-- Explanation -->
+        <section class="detector-card">
+
+            <h2>Performance Analysis</h2>
+
+            <p>
+                Execution time is measured using Python's
+                <code>time.perf_counter()</code>.
+            </p>
+
+            <p>
+                The measured time depends on the number of SMS records,
+                the computer's performance, and the data being processed.
+                Very small datasets may produce extremely small timings.
+            </p>
+
+            <p>
+                These measurements represent individual runs, not an
+                average benchmark.
+            </p>
+
+        </section>
+
+        <!-- Navigation Buttons -->
+        <div class="section-heading">
+
+            <a href="{{ url_for('history') }}" class="primary-button">
+                View SMS History
+            </a>
+
+            <a href="{{ url_for('home') }}" class="primary-button">
+                Back to Detector
+            </a>
+
+        </div>
+
+        <footer>
+            Python | Flask | Machine Learning | SQLite | DAA
+        </footer>
+
+    </main>
+
+</body>
+</html>
